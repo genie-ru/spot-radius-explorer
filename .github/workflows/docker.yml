@@ -4,6 +4,10 @@ on:
   push:
     branches: [main]
   pull_request:
+  schedule:
+    # 週次（月曜 00:00 UTC）。distroless ベースが Debian のパッチ済み libssl3 を
+    # 取り込んだかを、キャッシュ無効・ベース再取得つきで再スキャンして確認する。
+    - cron: "0 0 * * 1"
 
 jobs:
   hadolint:
@@ -43,6 +47,10 @@ jobs:
           tags: mobility-infra-${{ matrix.service }}:scan
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          # 毎回ベースを取り直す（新しい distroless が出ていれば拾う）。
+          # 週次スケジュールではキャッシュも無効化し、完全に新鮮な状態でスキャンする。
+          pull: true
+          no-cache: ${{ github.event_name == 'schedule' }}
 
       - name: Trivy scan (fail on HIGH/CRITICAL)
         uses: aquasecurity/trivy-action@v0.36.0
@@ -53,6 +61,41 @@ jobs:
           ignore-unfixed: true
           severity: HIGH,CRITICAL
           vuln-type: os,library
+
+      # 週次のみ: .trivyignore を無効化して再スキャンし、無視エントリのうち
+      # 「もうベースに存在しない＝削除可能」なものを検出して STEP_SUMMARY に通知する。
+      # backend のみで実施（frontend/portal と同じ distroless-nodejs ベースを代表）。
+      - name: Re-scan without ignore list (drift check)
+        if: github.event_name == 'schedule' && matrix.service == 'backend'
+        uses: aquasecurity/trivy-action@v0.36.0
+        env:
+          TRIVY_IGNOREFILE: /dev/null
+        with:
+          image-ref: mobility-infra-${{ matrix.service }}:scan
+          format: json
+          output: trivy-raw.json
+          ignore-unfixed: true
+          severity: HIGH,CRITICAL
+          vuln-type: os,library
+
+      - name: Report removable .trivyignore entries
+        if: github.event_name == 'schedule' && matrix.service == 'backend'
+        run: |
+          present="$(jq -r '[.Results[].Vulnerabilities[]?.VulnerabilityID] | unique | .[]' trivy-raw.json 2>/dev/null || true)"
+          {
+            echo "## .trivyignore drift check"
+            removable=0
+            while read -r cve; do
+              [ -z "$cve" ] && continue
+              if printf '%s\n' "$present" | grep -qx "$cve"; then
+                echo "- ⏳ \`$cve\` — まだ検出（無視を継続）"
+              else
+                echo "- ✅ \`$cve\` — ベースで解消済み → **.trivyignore から削除可能**"
+                removable=1
+              fi
+            done < <(grep -E '^CVE-' .trivyignore)
+            [ "$removable" = 1 ] && echo "::notice::.trivyignore に削除可能なエントリがあります"
+          } >> "$GITHUB_STEP_SUMMARY"
 
   e2e:
     runs-on: ubuntu-latest

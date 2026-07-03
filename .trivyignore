@@ -1,11 +1,15 @@
 # Trivy 無視リスト。
-# ここに載せるのは「自前リポジトリでは修正不能」な脆弱性のみ（＝distroless ベースの OS パッケージ）。
+# ここに載せるのは「Debian 側では修正済みだが distroless ベースがまだ取り込んでおらず、
+# distroless は apt を持たないため自前で即時パッチできない」OS パッケージ CVE のみ（＝一時措置）。
 # ライブラリ（node-pkg 等）の脆弱性は override / バージョン更新で直すこと。ここには載せない。
 #
-# --- distroless(gcr.io/distroless/nodejs24-debian12) ベースの libssl3(OpenSSL) OS CVE ---
-# distroless は apt を持たず自前でパッチできない。上流がベースを再ビルドすれば解消するため、
-# イメージを定期的に再ビルド（ベース再取得）して解消を確認し、解消済みのものは本ファイルから削除する。
-# 登録日: 2026-07-03 / 次回見直し目安: 2026-08 のベース再取得時
+# --- distroless(gcr.io/distroless/nodejs24-debian12) の libssl3(OpenSSL) OS CVE ---
+# ベース同梱: libssl3 3.0.18-1~deb12u2（脆弱）。
+# Debian 修正版: 3.0.19-1~deb12u2（28387-90, 31789）/ 3.0.20-1~deb12u2（45447）。いずれもパッチ済み。
+# 上流が distroless を再ビルドして新しい libssl3 を取り込めば解消する（＝恒久的な無視ではない）。
+# 確認は手動不要: docker.yml の週次スケジュールが pull:true + no-cache で再スキャンし、
+# 検出されなくなったエントリを STEP_SUMMARY に「削除可能」として自動通知する。→ 通知が出たら本ファイルから削除。
+# 登録日: 2026-07-03
 CVE-2026-31789
 CVE-2026-28387
 CVE-2026-28388
