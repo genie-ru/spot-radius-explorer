@@ -21,6 +21,7 @@ FROM node:24-bookworm-slim AS dev
 # nest start --watch(tsc-watch) は再起動時に tree-kill で旧プロセスを終了させるが、tree-kill は
 # ps(procps) に依存する。slim には ps が無く、欠けると子プロセス(node)を kill できず orphan 化して
 # 8080 を握り続け EADDRINUSE になる。dev のみ導入。
+# hadolint ignore=DL3008
 RUN apt-get update && apt-get install -y --no-install-recommends procps \
  && rm -rf /var/lib/apt/lists/*
 RUN corepack enable
