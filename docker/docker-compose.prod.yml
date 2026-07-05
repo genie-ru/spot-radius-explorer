@@ -12,19 +12,11 @@ services:
     <<: *service
     build: { context: .., dockerfile: docker/web/Dockerfile, target: prod }
     ports: ["80:80"]
-    depends_on: [frontend, portal, backend, model]
+    depends_on: [frontend, backend, model]
 
   frontend:
     <<: *service
     build: { context: .., dockerfile: docker/frontend/Dockerfile, target: prod }
-    expose: ["3000"]
-    environment:
-      BACKEND_URL: http://backend:8080
-    depends_on: [backend]
-
-  portal:
-    <<: *service
-    build: { context: .., dockerfile: docker/portal/Dockerfile, target: prod }
     expose: ["3000"]
     environment:
       BACKEND_URL: http://backend:8080

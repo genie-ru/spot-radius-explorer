@@ -11,7 +11,7 @@ DRUN := $(COMPOSE) run --rm --no-deps --user $(UIDGID) -e HOME=/tmp -e npm_confi
 
 .PHONY: help up down check lint format logs
 
-TS_SERVICES := backend frontend portal
+TS_SERVICES := backend frontend
 
 help: ## タスク一覧を表示
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
