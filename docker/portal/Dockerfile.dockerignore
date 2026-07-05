@@ -1,6 +1,0 @@
-*
-!services/portal
-services/portal/node_modules
-services/portal/.next
-services/portal/out
-**/*.log

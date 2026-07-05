@@ -4,4 +4,3 @@
 packages:
   - services/backend
   - services/frontend
-  - services/portal
