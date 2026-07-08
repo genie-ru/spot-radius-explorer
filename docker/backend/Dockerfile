@@ -39,5 +39,7 @@ ENV NODE_ENV=production
 COPY --from=builder --chown=65532:65532 /app/node_modules ./node_modules
 COPY --from=builder --chown=65532:65532 /app/dist ./dist
 COPY --from=builder --chown=65532:65532 /app/package.json ./
+# 冪等シードが起動時に読む CSV（process.cwd()/seed/…）。dev は bind マウントで入るが prod は明示コピー。
+COPY --from=builder --chown=65532:65532 /app/seed ./seed
 EXPOSE 8080
 CMD ["dist/main.js"]

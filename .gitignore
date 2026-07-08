@@ -19,3 +19,9 @@ next-env.d.ts
 # logs / os
 *.log
 .DS_Store
+
+# secrets（API キー等はリポジトリに入れない。*.example のみ追跡する）
+.env
+.env.*
+!.env.example
+!.env.*.example

@@ -42,12 +42,13 @@ services:
     ports: ["8080:8080"]   # dev のみホスト公開
     environment:
       DATABASE_URL: postgres://mobility:mobility@db:5432/mobility?sslmode=disable
-      CACHE_URL: redis://cache:6379
+    env_file:              # docker/.env（gitignore 済み）。GEOCODE_DAILY_QUOTA を任意注入。無くても既定で起動
+      - path: .env
+        required: false
     volumes:
       - ../services/backend:/app
     depends_on:
       db: { condition: service_healthy }
-      cache: { condition: service_healthy }
     healthcheck:   # pnpm install→nest start(watch) 完了で healthy
       test: ["CMD", "node", "-e", "fetch('http://localhost:8080/api/health').then(()=>process.exit(0)).catch(()=>process.exit(1))"]
       interval: 5s
