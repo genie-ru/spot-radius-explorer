@@ -31,9 +31,7 @@ const METERS_PER_KM = 1000;
 // （ST_MakePoint / ST_DWithin / ST_Distance / ST_X / ST_Y）はすべてここに閉じ込める。
 @Injectable()
 export class SpotsRepository {
-  constructor(
-    @InjectRepository(Spot) private readonly repo: Repository<Spot>,
-  ) {}
+  constructor(@InjectRepository(Spot) private readonly repo: Repository<Spot>) {}
 
   // 中心(lat,lng)から radiusKm 以内のスポットを、近い順（距離昇順）に取得する。
   async findWithinRadius(query: RadiusQuery): Promise<SpotRawRow[]> {

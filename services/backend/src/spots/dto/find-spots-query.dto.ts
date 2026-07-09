@@ -26,7 +26,12 @@ export class FindSpotsQueryDto {
   // categories=公園,神社 のようなカンマ区切りを配列へ。
   @IsOptional()
   @Transform(({ value }) =>
-    typeof value === 'string' ? value.split(',').map((s) => s.trim()).filter(Boolean) : value,
+    typeof value === 'string'
+      ? value
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : value,
   )
   @IsArray()
   @IsString({ each: true })

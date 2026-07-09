@@ -68,8 +68,7 @@ export class SpotsSeeder implements OnApplicationBootstrap {
   // CSV を読み、各行を検証して SpotSeedRow[] にする。
   private loadSeedRows(): SpotSeedRow[] {
     const path =
-      process.env.SEED_CSV_PATH ??
-      join(process.cwd(), DEFAULT_SEED_DIR, DEFAULT_SEED_FILE);
+      process.env.SEED_CSV_PATH ?? join(process.cwd(), DEFAULT_SEED_DIR, DEFAULT_SEED_FILE);
 
     const records: RawCsvRow[] = parse(readFileSync(path, 'utf8'), {
       columns: true,
