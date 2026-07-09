@@ -1,4 +1,4 @@
-# doc — 学習・調査記録
+
 
 docker compose exec db psql -U mobility -d mobility
 
@@ -12,4 +12,14 @@ CSV の `lat` / `long` が `geom`(geography) に正しく変換されるかを�
 ```bash
 # docker/ ディレクトリで実行
 docker compose exec db psql -U mobility -d mobility -f /docker-entrypoint-initdb.d/checks/verify_geom.sql
+```
+
+#  マイグレーション方法
+```bash
+# docker/ ディレクトリで実行
+docker compose exec backend sh -c 'pnpm build && pnpm migration:run'
+```
+
+```bash
+docker compose exec backend sh -c 'pnpm build && pnpm migration:revert'
 ```
