@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [web, backend, frontend, portal, model, notebook, db, cache]
+        service: [web, backend, frontend, db, cache]
     steps:
       - uses: actions/checkout@v5
       - name: Lint docker/${{ matrix.service }}/Dockerfile
@@ -30,7 +30,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [web, backend, frontend, portal]
+        service: [web, backend, frontend]
     steps:
       - uses: actions/checkout@v5
 

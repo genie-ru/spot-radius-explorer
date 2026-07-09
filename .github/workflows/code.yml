@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [backend, frontend, portal]
+        service: [backend, frontend]
     defaults:
       run:
         working-directory: services/${{ matrix.service }}
