@@ -1,4 +1,6 @@
 .next
+out
 node_modules
+.pnpm-store
 pnpm-lock.yaml
 next-env.d.ts

@@ -1,0 +1,19 @@
+@import 'tailwindcss';
+
+/* スポットのマーカー（Google Maps AdvancedMarker の中身）。 */
+.spot-pin {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #ffffff;
+  border-radius: 9999px;
+  background: #ef4444;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.4);
+  cursor: pointer;
+}
+
+/* リスト hover / 選択と連動して強調。 */
+.spot-pin--active {
+  width: 20px;
+  height: 20px;
+  background: #2563eb;
+}
