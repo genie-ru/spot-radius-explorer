@@ -120,6 +120,10 @@ jobs:
           done
           [ -n "$ready" ] || { docker compose --env-file docker/.env.prod -f docker/docker-compose.prod.yml logs; exit 1; }
           curl -fsS localhost/api/health | grep -q '"status":"ok"'            # backend  (web -> backend, /api)
+          # 半径検索が実データを返すか（要件① 自動インポート + ② 半径検索 を通しで検証）
+          # 東京駅から半径3kmで 1 件以上返れば seed + migration + PostGIS が本番で通っている。
+          n=$(curl -fsS 'localhost/api/spots?lat=35.681236&lng=139.767125&radiusKm=3' | grep -o '"count":[0-9]*' | grep -o '[0-9]*')
+          [ "${n:-0}" -ge 1 ] || { echo "spots search returned count=$n"; exit 1; }
           curl -fsS localhost/ | grep -q '<title>'                            # frontend (web -> frontend)
           [ "$(curl -s -o /dev/null -w '%{http_code}' localhost/probe.svg)" = 200 ]   # public asset
           # 画像最適化(sharp)がロード済みなら 400(SVGポリシー)。500 は libstdc++/libgcc_s 欠落の回帰
