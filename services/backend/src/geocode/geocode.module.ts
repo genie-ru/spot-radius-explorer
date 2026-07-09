@@ -18,7 +18,7 @@ import { GoogleProvider } from './providers/google.provider';
           logger.log('Google Geocoding API を使用します');
         } else {
           logger.warn(
-            'GEOCODING_API_KEY が未設定です。中心住所は取得できません（住所は degrade 表示）',
+            'GEOCODING_API_KEY が未設定です。中心住所は取得できません（住所欄のみ非表示で継続）',
           );
         }
         return new GoogleProvider(apiKey);

@@ -3,7 +3,7 @@ import { GeocodingProvider } from '../geocoding-provider';
 
 // Google Geocoding API 実装（本アプリの逆ジオコーディングはこれ一本）。
 // キーは環境変数からサーバ側にのみ渡り、クライアントには出さない（課題7）。
-// キー未設定や API エラー時は null を返し、住所は「取得できません」表示に degrade する。
+// キー未設定や API エラー時は null を返し、住所欄のみ「取得できません」表示にして処理を継続する。
 export class GoogleProvider implements GeocodingProvider {
   private readonly logger = new Logger(GoogleProvider.name);
   private readonly endpoint = 'https://maps.googleapis.com/maps/api/geocode/json';
