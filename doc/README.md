@@ -1,8 +1,15 @@
 # doc — 学習・調査記録
 
-学習 / キャッチアップ / 調査のログを **日付き（`YYYY-MM-DD.md`）** で残す置き場。
-トピックごとにサブディレクトリへ分ける。
+docker compose exec db psql -U mobility -d mobility
 
-- [NestJs/](NestJs/) — NestJS の学習メモ
-- [GCP/](GCP/) — GCP / Cloud Monitoring 等の学習メモ
-- [marketing/](marketing/) — マーケティング・業界調査メモ
+
+### geom 変換の動作確認
+
+CSV の `lat` / `long` が `geom`(geography) に正しく変換されるかを確認するチェックスクリプト。
+**一時テーブルだけを使う非破壊の確認で、`spots` などの実テーブルには一切書き込みません。**
+使った一時テーブルはセッション終了時に自動で消えるため、実行後の DB の状態は実行前と同じです。
+
+```bash
+# docker/ ディレクトリで実行
+docker compose exec db psql -U mobility -d mobility -f /docker-entrypoint-initdb.d/checks/verify_geom.sql
+```
