@@ -3,14 +3,11 @@ import { join } from 'node:path';
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import { parse } from 'csv-parse/sync';
 import { DataSource } from 'typeorm';
+import { LATITUDE_RANGE, LONGITUDE_RANGE } from '../common/geo.constants';
 
 // シード元CSV（backend イメージ同梱 / dev は bind マウント）。SEED_CSV_PATH で差し替え可。
 const DEFAULT_SEED_DIR = 'seed';
 const DEFAULT_SEED_FILE = 'spot_test_seed.csv';
-
-// 緯度・経度の妥当範囲（地球の経度緯度の範囲内であるか）。
-const LATITUDE_RANGE = { min: -90, max: 90 } as const;
-const LONGITUDE_RANGE = { min: -180, max: 180 } as const;
 
 // CSV の1行（ヘッダ: name, category, lat, long, address）。
 interface RawCsvRow {

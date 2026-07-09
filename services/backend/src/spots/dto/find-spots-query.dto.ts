@@ -1,26 +1,31 @@
 import { Transform, Type } from 'class-transformer';
 import { IsArray, IsNumber, IsOptional, IsPositive, IsString, Max, Min } from 'class-validator';
+import {
+  LATITUDE_RANGE,
+  LONGITUDE_RANGE,
+  MAX_RADIUS_KM,
+  MAX_RESULT_LIMIT,
+} from '../../common/geo.constants';
 
-// 半径検索用リクエスト DTO
-// 現時点の GET /api/spots は全件返すため未使用。半径検索を実装する際に
-// コントローラで @Query() として受け、ValidationPipe(transform) で数値化・検証する。
+// GET /api/spots のリクエスト DTO（中心・半径・カテゴリ・件数）。
+// ValidationPipe(transform) でクエリ文字列を数値化し、範囲・型を検証する。
 export class FindSpotsQueryDto {
   @Type(() => Number)
   @IsNumber()
-  @Min(-90)
-  @Max(90)
+  @Min(LATITUDE_RANGE.min)
+  @Max(LATITUDE_RANGE.max)
   lat!: number;
 
   @Type(() => Number)
   @IsNumber()
-  @Min(-180)
-  @Max(180)
+  @Min(LONGITUDE_RANGE.min)
+  @Max(LONGITUDE_RANGE.max)
   lng!: number;
 
   @Type(() => Number)
   @IsNumber()
   @IsPositive()
-  @Max(3000) // 半径の上限キャップ（km）。日本列島の端〜端（約3000km）= 任意の中心から全国を覆える
+  @Max(MAX_RADIUS_KM) // 半径の上限（km）。日本列島の端〜端＝任意の中心から全国を覆える
   radiusKm!: number;
 
   // categories=公園,神社 のようなカンマ区切りを配列へ。
@@ -41,6 +46,6 @@ export class FindSpotsQueryDto {
   @Type(() => Number)
   @IsNumber()
   @IsPositive()
-  @Max(500) // 返却件数の上限キャップ
+  @Max(MAX_RESULT_LIMIT) // 返却件数の上限
   limit?: number;
 }
