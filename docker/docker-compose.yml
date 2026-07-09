@@ -15,7 +15,6 @@ services:
     depends_on:
       frontend: { condition: service_healthy }
       backend: { condition: service_healthy }
-      model: { condition: service_healthy }
 
   frontend:   # Next.js フロントエンド
     <<: *service
@@ -55,31 +54,6 @@ services:
       timeout: 3s
       retries: 40
       start_period: 20s
-
-  model:   # Python/FastAPI（AI 推論）
-    <<: *service
-    build: { context: .., dockerfile: docker/model/Dockerfile, target: dev }
-    expose: ["8000"]
-    ports: ["8000:8000"]   # dev のみホスト公開（/model/docs で Swagger UI）
-    volumes:
-      - ../services/model:/app
-    healthcheck:   # pip install 完了→uvicorn 起動で healthy。web はこれを待つ
-      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/model/health')\" || exit 1"]
-      interval: 5s
-      timeout: 3s
-      retries: 40
-      start_period: 20s
-
-  notebook:   # JupyterLab（dev 専用の対話環境。prod compose には無い）
-    <<: *service
-    build: { context: .., dockerfile: docker/notebook/Dockerfile, target: base }
-    expose: ["8888"]
-    ports: ["8888:8888"]   # http://localhost:8888 （トークン無し・ローカル専用）
-    env_file:              # docker/.env（gitignore 済み）から任意の値を注入。無くても起動可
-      - path: .env
-        required: false
-    volumes:
-      - ../services/notebook/notebooks:/work
 
   db:
     <<: *service

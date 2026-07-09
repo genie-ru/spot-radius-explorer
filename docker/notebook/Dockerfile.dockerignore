@@ -1,4 +1,0 @@
-*
-!services/notebook
-services/notebook/.ipynb_checkpoints
-**/*.pyc

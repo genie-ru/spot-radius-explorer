@@ -12,7 +12,7 @@ services:
     <<: *service
     build: { context: .., dockerfile: docker/web/Dockerfile, target: prod }
     ports: ["80:80"]
-    depends_on: [frontend, backend, model]
+    depends_on: [frontend, backend]
 
   frontend:
     <<: *service
@@ -21,12 +21,6 @@ services:
     environment:
       BACKEND_URL: http://backend:8080
     depends_on: [backend]
-
-  model:
-    <<: *service
-    build: { context: .., dockerfile: docker/model/Dockerfile, target: prod }
-    expose: ["8000"]
-    # slim だが distroless ではないので shell あり。必要なら healthcheck を足す
 
   backend:
     <<: *service
