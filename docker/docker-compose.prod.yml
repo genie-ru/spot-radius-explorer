@@ -16,7 +16,15 @@ services:
 
   frontend:
     <<: *service
-    build: { context: .., dockerfile: docker/frontend/Dockerfile, target: prod }
+    build:
+      context: ..
+      dockerfile: docker/frontend/Dockerfile
+      target: prod
+      # NEXT_PUBLIC_* はビルド時に焼き込む必要があるため build-arg で渡す。
+      # CI/CD では SSM 等から取得した値を環境変数に入れておけばここへ流れる。
+      args:
+        NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${NEXT_PUBLIC_GOOGLE_MAPS_API_KEY:-}
+        NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID: ${NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID:-DEMO_MAP_ID}
     expose: ["3000"]
     environment:
       BACKEND_URL: http://backend:8080
@@ -28,10 +36,12 @@ services:
     expose: ["8080"]
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER:?set in .env.prod}:${POSTGRES_PASSWORD:?set in .env.prod}@db:5432/${POSTGRES_DB:?set in .env.prod}?sslmode=disable
-      # 逆ジオコーディング関所（設計書 §6）。外部は Nominatim 1 本。日次クォータのみ任意上書き。
+      REDIS_URL: redis://cache:6379
+      # 逆ジオコーディングの日次上限（任意・受け口のみ／未実装）。外部は Google Geocoding 1 本。
       GEOCODE_DAILY_QUOTA: ${GEOCODE_DAILY_QUOTA:-}
     depends_on:
       db: { condition: service_healthy }
+      cache: { condition: service_healthy }
     # distroless はシェルが無いのでコンテナ内 healthcheck は持たない
 
   db:

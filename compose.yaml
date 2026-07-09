@@ -1,0 +1,5 @@
+# リポジトリ直下から `docker compose up` 一発で起動するためのエントリ。
+# 実体の定義は docker/docker-compose.yml（開発用）を include して読み込む。
+# 本番は docker/docker-compose.prod.yml を -f で指定する。
+include:
+  - docker/docker-compose.yml

@@ -8,11 +8,6 @@ dist/
 out/
 *.tsbuildinfo
 
-# python
-__pycache__/
-*.pyc
-.venv/
-
 # next
 next-env.d.ts
 

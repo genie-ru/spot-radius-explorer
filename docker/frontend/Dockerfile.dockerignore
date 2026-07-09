@@ -1,6 +1,7 @@
 *
 !services/frontend
 services/frontend/node_modules
+services/frontend/.pnpm-store
 services/frontend/.next
 services/frontend/out
 **/*.log

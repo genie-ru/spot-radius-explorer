@@ -10,7 +10,14 @@ RUN corepack enable
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY services/frontend/ ./
-ENV NEXT_TELEMETRY_DISABLED=1
+# NEXT_PUBLIC_* はビルド時にバンドルへ焼き込まれる。prod では build-arg で受け取り、
+# next build 前に ENV へ流し込む（未指定なら空＝地図はキー未設定表示のまま起動はする）。
+# ブラウザ公開値なので秘匿対象ではない（保護は GCP のリファラ制限で行う）。
+ARG NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=""
+ARG NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID="DEMO_MAP_ID"
+ENV NEXT_TELEMETRY_DISABLED=1 \
+    NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=$NEXT_PUBLIC_GOOGLE_MAPS_API_KEY \
+    NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID=$NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID
 RUN pnpm run build
 
 # dev: ソースは compose の bind マウントで /app に入る。

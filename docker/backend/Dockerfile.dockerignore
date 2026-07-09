@@ -1,5 +1,6 @@
 *
 !services/backend
 services/backend/node_modules
+services/backend/.pnpm-store
 services/backend/dist
 **/*.log
