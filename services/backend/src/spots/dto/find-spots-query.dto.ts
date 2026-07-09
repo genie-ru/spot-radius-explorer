@@ -20,7 +20,7 @@ export class FindSpotsQueryDto {
   @Type(() => Number)
   @IsNumber()
   @IsPositive()
-  @Max(50) // 半径の上限キャップ（km）
+  @Max(3000) // 半径の上限キャップ（km）。日本列島の端〜端（約3000km）= 任意の中心から全国を覆える
   radiusKm!: number;
 
   // categories=公園,神社 のようなカンマ区切りを配列へ。

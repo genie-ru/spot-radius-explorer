@@ -7,6 +7,7 @@ export class SpotResponseDto {
   address!: string;
   lat!: number;
   lng!: number;
+  distanceM!: number; // 検索中心からの距離（メートル）
 }
 
 export class SpotListResponseDto {
