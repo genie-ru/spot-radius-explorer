@@ -64,7 +64,7 @@ jobs:
 
       # 週次のみ: .trivyignore を無効化して再スキャンし、無視エントリのうち
       # 「もうベースに存在しない＝削除可能」なものを検出して STEP_SUMMARY に通知する。
-      # backend のみで実施（frontend/portal と同じ distroless-nodejs ベースを代表）。
+      # backend のみで実施（frontend と同じ distroless-nodejs ベースを代表）。
       - name: Re-scan without ignore list (drift check)
         if: github.event_name == 'schedule' && matrix.service == 'backend'
         uses: aquasecurity/trivy-action@v0.36.0
@@ -121,7 +121,6 @@ jobs:
           [ -n "$ready" ] || { docker compose --env-file docker/.env.prod -f docker/docker-compose.prod.yml logs; exit 1; }
           curl -fsS localhost/api/health | grep -q '"status":"ok"'            # backend  (web -> backend, /api)
           curl -fsS localhost/ | grep -q '<title>'                            # frontend (web -> frontend)
-          curl -fsS localhost/portal | grep -q '<title>'                      # portal   (web -> portal)
           [ "$(curl -s -o /dev/null -w '%{http_code}' localhost/probe.svg)" = 200 ]   # public asset
           # 画像最適化(sharp)がロード済みなら 400(SVGポリシー)。500 は libstdc++/libgcc_s 欠落の回帰
           code=$(curl -s -o /dev/null -w '%{http_code}' 'localhost/_next/image?url=%2Fprobe.svg&w=64&q=75')
